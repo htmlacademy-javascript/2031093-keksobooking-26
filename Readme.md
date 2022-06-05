@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг»
 
 * Студент: [Vitaly Kolyshkin](https://up.htmlacademy.ru/javascript/26/user/2031093).
-* Наставник: `Неизвестно`.
+* Наставник: [Михаил Кислый](https://htmlacademy.ru/profile/smart-grizzly).
 
 ---
 
