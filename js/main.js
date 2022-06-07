@@ -1,18 +1,18 @@
 function randomizerParametersAreCorrect(min, max, functionErrorString) {
-  let result = true;
+  //let result = true;
 
   if (max === undefined) {
-    console.log(`${functionErrorString} There are must be two number parameters.`);
-    result = false;
+    throw new Error(`${functionErrorString} There are must be two number parameters.`);
+    //result = false;
   } else if (!Number.isFinite(min) || !Number.isFinite(max) || min < 0 || max < 0) {
-    console.log(`${functionErrorString}  Parameters "min" and "max" must be numbers greater or equal to zero.`);
-    result = false;
+    throw new Error(`${functionErrorString}  Parameters "min" and "max" must be numbers greater or equal to zero.`);
+    //result = false;
   } else if (min > max || min === max) {
-    console.log(`${functionErrorString} Parameter "min" must be less then parameter "max".`);
-    result = false;
+    throw new Error(`${functionErrorString} Parameter "min" must be less then parameter "max".`);
+    //result = false;
   }
 
-  return result;
+  return true;
 }
 
 function getRandomNumber(min, max, tail, functionError) {
@@ -40,5 +40,5 @@ function getRandomRealNumber(min, max, tail) {
   return getRandomNumber(min, max, tail, functionError);
 }
 
-alert(getRandomRealNumber(77.7, 888.8, 4));
-alert(getRandomIntegerNumber(77, 777));
+getRandomRealNumber(77.7, 888.8, 4);
+getRandomIntegerNumber(77, 77);
