@@ -11,7 +11,7 @@ const MAX_ROOMS_QTY = 10;
 const MIN_GUESTS_QTY = 1;
 const MAX_GUESTS_QTY = 6;
 
-const APARTAMENTS_TYPE = [
+const APARTMENTS_TYPE = [
   'palace',
   'flat',
   'house',
@@ -19,13 +19,7 @@ const APARTAMENTS_TYPE = [
   'hotel',
 ];
 
-const CHECKIN = [
-  '12:00',
-  '13:00',
-  '14:00',
-];
-
-const CHECKOUT = [
+const TIMES = [
   '12:00',
   '13:00',
   '14:00',
@@ -90,19 +84,11 @@ const getAvatarNumberString = (number) => {
   return numberString;
 };
 
-const generateAuthor = (avatarNumber) => {
-  const author = {
-    avatar: `img/avatars/user${getAvatarNumberString(avatarNumber)}.png`,
-  };
+const generateAuthor = (avatarNumber) => ({
+  avatar: `img/avatars/user${getAvatarNumberString(avatarNumber)}.png`,
+});
 
-  return author;
-};
-
-const getRandomArrayItem = (array) => {
-  const item = array[getRandomIntegerNumber(0, array.length - 1)];
-
-  return item;
-};
+const getRandomArrayItem = (array) => array[getRandomIntegerNumber(0, array.length - 1)];
 
 const getRandomArrayItemsCollection = (array) => {
   const itemsQty = getRandomIntegerNumber(1, array.length);
@@ -121,38 +107,32 @@ const getRandomArrayItemsCollection = (array) => {
 
 const generateOffer = (id, location) => {
   const price = getRandomIntegerNumber(MIN_PRICE, MAX_PRICE);
-  const type = getRandomArrayItem(APARTAMENTS_TYPE);
+  const type = getRandomArrayItem(APARTMENTS_TYPE);
   const rooms = getRandomIntegerNumber(MIN_ROOMS_QTY, MAX_ROOMS_QTY);
   const features = getRandomArrayItemsCollection(FEATURES);
   const description = `Best ${type} you've ever seen. It has ${rooms} rooms. Offer includes ${features.join(', ')}. And only today at low price $${price}`;
 
-  const offer = {
+  return {
     title: `Offer #${id}`,
     address: `{${location.lat}, ${location.lng}}`,
     price,
     type,
     rooms,
     guests: getRandomIntegerNumber(MIN_GUESTS_QTY, MAX_GUESTS_QTY),
-    checkin: getRandomArrayItem(CHECKIN),
-    checkout: getRandomArrayItem(CHECKOUT),
+    checkin: getRandomArrayItem(TIMES),
+    checkout: getRandomArrayItem(TIMES),
     features,
     description,
     photos: getRandomArrayItemsCollection(PHOTOS),
   };
-
-  return offer;
 };
 
-const generatetLocation = () => {
-  const location = {
-    lat: getRandomRealNumber(MIN_LAT, MAX_LAT, DECIMAL_PLACES_QTY),
-    lng: getRandomRealNumber(MIN_LNG, MAX_LNG, DECIMAL_PLACES_QTY),
-  };
+const generatetLocation = () => ({
+  lat: getRandomRealNumber(MIN_LAT, MAX_LAT, DECIMAL_PLACES_QTY),
+  lng: getRandomRealNumber(MIN_LNG, MAX_LNG, DECIMAL_PLACES_QTY),
+});
 
-  return location;
-};
-
-const costructAd = (stub, index) => {
+const generateAd = (stub, index) => {
   const location = generatetLocation();
   const ad = {
     author: generateAuthor(index + 1),
@@ -163,11 +143,7 @@ const costructAd = (stub, index) => {
   return ad;
 };
 
-const generateData = () => {
-  const ads = Array.from({length: TEST_DATA_SIZE}, costructAd);
-
-  return ads;
-};
+const generateData = () => Array.from({length: TEST_DATA_SIZE}, generateAd);
 
 {//TEST. TODO delete before release
   getRandomRealNumber(77.7, 888.8, 4);
