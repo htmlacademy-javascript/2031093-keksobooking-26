@@ -63,7 +63,7 @@ const generateOffer = (id, location) => {
   const type = getRandomArrayItem(APARTMENTS_TYPE);
   const rooms = getRandomIntegerNumber(MIN_ROOMS_QTY, MAX_ROOMS_QTY);
   const features = getRandomArrayItemsCollection(FEATURES);
-  const description = `Best ${type} you've ever seen. It has ${rooms} rooms. Offer includes ${features.join(', ')}. And only today at low price $${price}`;
+  const description = `Best ${type} you've ever seen. It has ${rooms} rooms. Offer includes ${features.join(', ')}. And only today at low price ${price}₽ per night`;
 
   return {
     title: `Offer #${id}`,
