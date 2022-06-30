@@ -5,6 +5,9 @@ import {
   getRandomIntegerNumber
 } from './utils.js';
 
+const bookingMap = document.querySelector('#map-canvas');
+const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
+const offersList = document.createDocumentFragment();
 const APARTMENTS_DESCRIPTION = {
   'palace': 'Дворец',
   'flat': 'Квартира',
@@ -13,7 +16,9 @@ const APARTMENTS_DESCRIPTION = {
   'hotel': 'Отель',
 };
 
-function setCardAvatar(card, {avatar}) {
+const ads = generateData();
+
+const setCardAvatar = (card, {avatar}) => {
   const avatarElement = card.querySelector('.popup__avatar');
 
   if (avatar) {
@@ -21,9 +26,9 @@ function setCardAvatar(card, {avatar}) {
   } else {
     avatarElement.style.visibility = 'hidden';
   }
-}
+};
 
-function setCardTitle(card, {title}) {
+const setCardTitle = (card, {title}) => {
   const titleElement = card.querySelector('.popup__title');
 
   if (title) {
@@ -31,9 +36,9 @@ function setCardTitle(card, {title}) {
   } else {
     titleElement.style.visibility = 'hidden';
   }
-}
+};
 
-function setCardAddress(card, {address}) {
+const setCardAddress = (card, {address}) => {
   const addressElement = card.querySelector('.popup__text--address');
 
   if (address) {
@@ -41,9 +46,9 @@ function setCardAddress(card, {address}) {
   } else {
     addressElement.style.visibility = 'hidden';
   }
-}
+};
 
-function setCardPrice(card, {price}) {
+const setCardPrice = (card, {price}) => {
   const priceElement = card.querySelector('.popup__text--price');
 
   if (price) {
@@ -51,9 +56,9 @@ function setCardPrice(card, {price}) {
   } else {
     priceElement.style.visibility = 'hidden';
   }
-}
+};
 
-function aetCardType(card, {type}) {
+const setCardType = (card, {type}) => {
   const typeElement = card.querySelector('.popup__type');
 
   if (type) {
@@ -61,9 +66,9 @@ function aetCardType(card, {type}) {
   } else {
     typeElement.style.visibility = 'hidden';
   }
-}
+};
 
-function setCardCapacity(card, {rooms, guests}) {
+const setCardCapacity = (card, {rooms, guests}) => {
   const capacityElement = card.querySelector('.popup__text--capacity');
 
   if (rooms && guests) {
@@ -75,9 +80,9 @@ function setCardCapacity(card, {rooms, guests}) {
   } else {
     capacityElement.style.visibility = 'hidden';
   }
-}
+};
 
-function setCardTime(card, {checkin, checkout}) {
+const setCardTime = (card, {checkin, checkout}) => {
   const timeElement = card.querySelector('.popup__text--time');
 
   if (checkin && checkout) {
@@ -89,7 +94,7 @@ function setCardTime(card, {checkin, checkout}) {
   } else {
     timeElement.style.visibility = 'hidden';
   }
-}
+};
 
 const setCardFeatures = (card, {features}) => {
   const featureList = card.querySelector('.popup__features').children;
@@ -133,12 +138,6 @@ const setCardPhotos = (card, {photos}) => {
   }
 };
 
-const bookingMap = document.querySelector('#map-canvas');
-const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
-const offersList = document.createDocumentFragment();
-
-const ads = generateData();
-
 ads.forEach(({author, offer}) => {
   const card = cardTemplate.cloneNode(true);
 
@@ -146,7 +145,7 @@ ads.forEach(({author, offer}) => {
   setCardTitle(card, offer);
   setCardAddress(card, offer);
   setCardPrice(card, offer);
-  aetCardType(card, offer);
+  setCardType(card, offer);
   setCardCapacity(card, offer);
   setCardTime(card, offer);
   setCardFeatures(card, offer);
