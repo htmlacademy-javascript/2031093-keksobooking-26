@@ -13,9 +13,7 @@ const randomizerParametersAreCorrect = (min, max, functionErrorString) => {
 const getRandomNumber = (min, max, tail, functionError) => {
   let result = null;
 
-  if (!randomizerParametersAreCorrect(min, max, functionError)) {
-    result = null;
-  } else {
+  if (randomizerParametersAreCorrect(min, max, functionError)) {
     result = +(  ( Math.random() * (max - min) + min ).toFixed(tail)  );
   }
 
