@@ -2,10 +2,12 @@ const formAdElement = document.querySelector('.ad-form');
 const formFiltersElement = document.querySelector('.map__filters');
 const roomNumberElement = document.querySelector('#room_number');
 const capacityElement = document.querySelector('#capacity');
+const addressElement = document.querySelector('#address');
 const typeElement = document.querySelector('#type');
 const priceElement = document.querySelector('#price');
 const timeinElement = document.querySelector('#timein');
 const timeoutElement = document.querySelector('#timeout');
+// const formResetButtonElement = document.querySelector('.ad-form__reset');
 
 const capacityOption = {
   '1': ['1'],
@@ -50,6 +52,10 @@ const setPageToInactive = () => {
 const setPageToActive = () => {
   setFormToActive(formAdElement);
   setFormToActive(formFiltersElement);
+};
+
+const setAddress = (address) => {
+  addressElement.value = address;
 };
 
 const validateCapacity = () => capacityOption[roomNumberElement.value].includes(capacityElement.value);
@@ -126,4 +132,6 @@ formAdElement.addEventListener('submit', (evt) => {
 export {
   setPageToInactive
   , setPageToActive
+  , setAddress
+  , formAdElement
 };

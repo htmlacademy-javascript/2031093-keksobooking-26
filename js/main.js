@@ -4,12 +4,10 @@ import {
 
 import {
   setPageToInactive
-  , setPageToActive
 } from './form.js';
+
+setPageToInactive();
 
 {//TEST. TODO delete before release
   generateData();
-
-  setPageToInactive();
-  setPageToActive();
 }

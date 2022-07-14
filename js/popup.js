@@ -1,11 +1,7 @@
 import {
   generateData
 } from './test-data.js';
-import {
-  getRandomIntegerNumber
-} from './utils.js';
 
-const bookingMap = document.querySelector('#map-canvas');
 const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
 const offersList = document.createDocumentFragment();
 const APARTMENTS_DESCRIPTION = {
@@ -154,5 +150,3 @@ ads.forEach(({author, offer}) => {
 
   offersList.append(card);
 });
-
-bookingMap.append(offersList.children[getRandomIntegerNumber(0, offersList.children.length - 1)]);
