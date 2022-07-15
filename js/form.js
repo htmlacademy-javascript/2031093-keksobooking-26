@@ -7,7 +7,6 @@ const typeElement = document.querySelector('#type');
 const priceElement = document.querySelector('#price');
 const timeinElement = document.querySelector('#timein');
 const timeoutElement = document.querySelector('#timeout');
-// const formResetButtonElement = document.querySelector('.ad-form__reset');
 
 const capacityOption = {
   '1': ['1'],

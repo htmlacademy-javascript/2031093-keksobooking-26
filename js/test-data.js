@@ -13,10 +13,10 @@ const MAX_LNG = 139.80000;
 const DECIMAL_PLACES_QTY = 4;
 const MIN_PRICE = 10000;
 const MAX_PRICE = 100000;
-const MIN_ROOMS_QTY = 1;
-const MAX_ROOMS_QTY = 10;
-const MIN_GUESTS_QTY = 1;
-const MAX_GUESTS_QTY = 6;
+const MIN_ROOMS_QTY = 0;
+const MAX_ROOMS_QTY = 3;
+const MIN_GUESTS_QTY = 0;
+const MAX_GUESTS_QTY = 3;
 
 const APARTMENTS_TYPE = [
   'palace',
@@ -61,7 +61,8 @@ const generateAuthor = (avatarNumber) => ({
 const generateOffer = (id, location) => {
   const price = getRandomIntegerNumber(MIN_PRICE, MAX_PRICE);
   const type = getRandomArrayItem(APARTMENTS_TYPE);
-  const rooms = getRandomIntegerNumber(MIN_ROOMS_QTY, MAX_ROOMS_QTY);
+  let rooms = getRandomIntegerNumber(MIN_ROOMS_QTY, MAX_ROOMS_QTY);
+  rooms = rooms ? rooms : 100;
   const features = getRandomArrayItemsCollection(FEATURES);
   const description = `Best ${type} you've ever seen. It has ${rooms} rooms. Offer includes ${features.join(', ')}. And only today at low price ${price}₽ per night`;
 
