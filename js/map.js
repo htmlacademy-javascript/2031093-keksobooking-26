@@ -12,8 +12,8 @@ import {
   getPopup
 } from './popup.js';
 
-const mantissaLength = 5;
-const initialMapScale = 16;
+const DECIMAL_MANTISSA_LENGTH = 5;
+const INITIAL_MAP_SCALE = 16;
 const centerOfTokyoCoordinates = {
   lat: 35.69771374623864,
   lng: 139.7730618400656,
@@ -22,13 +22,13 @@ const testAds = generateData();
 
 const map = L.map('map-canvas')
   .on('load', () => {
-    const lat = centerOfTokyoCoordinates.lat.toFixed(mantissaLength);
-    const lng = centerOfTokyoCoordinates.lng.toFixed(mantissaLength);
+    const lat = centerOfTokyoCoordinates.lat.toFixed(DECIMAL_MANTISSA_LENGTH);
+    const lng = centerOfTokyoCoordinates.lng.toFixed(DECIMAL_MANTISSA_LENGTH);
 
     setPageToActive();
     setAddress(`${lat}, ${lng}`);
   })
-  .setView(centerOfTokyoCoordinates, initialMapScale);
+  .setView(centerOfTokyoCoordinates, INITIAL_MAP_SCALE);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -69,15 +69,15 @@ testAds.forEach((ad) => {
 
 mainPinMarker.on('move', (evt) => {
   const latLng = evt.target.getLatLng();
-  const lat = latLng.lat.toFixed(mantissaLength);
-  const lng = latLng.lng.toFixed(mantissaLength);
+  const lat = latLng.lat.toFixed(DECIMAL_MANTISSA_LENGTH);
+  const lng = latLng.lng.toFixed(DECIMAL_MANTISSA_LENGTH);
 
   setAddress(`${lat}, ${lng}`);
 });
 
 const resetMap = () => {
   mainPinMarker.setLatLng(centerOfTokyoCoordinates);
-  map.setView(centerOfTokyoCoordinates, initialMapScale);
+  map.setView(centerOfTokyoCoordinates, INITIAL_MAP_SCALE);
 };
 
 formAdElement.addEventListener('reset', () => {

@@ -1,5 +1,6 @@
 const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
-const APARTMENTS_DESCRIPTION = {
+
+const apartmentsDescription = {
   'palace': 'Дворец',
   'flat': 'Квартира',
   'house': 'Дом',
@@ -51,7 +52,7 @@ const setCardType = (card, {type}) => {
   const typeElement = card.querySelector('.popup__type');
 
   if (type) {
-    typeElement.textContent = APARTMENTS_DESCRIPTION[type];
+    typeElement.textContent = apartmentsDescription[type];
   } else {
     typeElement.style.visibility = 'hidden';
   }

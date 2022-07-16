@@ -24,7 +24,7 @@ const priceOption = {
   'palace': '10000',
 };
 
-const maxPrice = 100000;
+const MAX_PRICE = 100000;
 
 const pristine = new Pristine(formAdElement, {
   classTo: 'ad-form__element',
@@ -35,7 +35,7 @@ const pristine = new Pristine(formAdElement, {
 noUiSlider.create(sliderElement, {
   range: {
     min: +priceOption[typeElement.value],
-    max: maxPrice,
+    max: MAX_PRICE,
   },
   step: 1,
   start: +priceOption[typeElement.value],
@@ -127,7 +127,7 @@ const onTypeChange = () => {
   sliderElement.noUiSlider.updateOptions({
     range: {
       min,
-      max: maxPrice,
+      max: MAX_PRICE,
     },
     step: 1,
     connect: 'lower',
