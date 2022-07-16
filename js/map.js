@@ -18,6 +18,7 @@ const centerOfTokyoCoordinates = {
   lat: 35.69771374623864,
   lng: 139.7730618400656,
 };
+const testAds = generateData();
 
 const map = L.map('map-canvas')
   .on('load', () => {
@@ -51,13 +52,19 @@ const mainPinMarker = L.marker(centerOfTokyoCoordinates, {
   icon: mainPinIcon,
 }).addTo(map);
 
-const testAds = generateData();
-testAds.forEach((ad) => {
+const markerGroup = L.layerGroup().addTo(map);
+
+const createMarker = (ad) => {
   L.marker(ad.location, {
     draggable: false,
     icon: otherPinIcon,
-  }).addTo(map)
+  })
+    .addTo(markerGroup)
     .bindPopup(getPopup(ad));
+};
+
+testAds.forEach((ad) => {
+  createMarker(ad);
 });
 
 mainPinMarker.on('move', (evt) => {
