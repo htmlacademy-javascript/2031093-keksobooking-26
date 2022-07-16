@@ -1,22 +1,12 @@
-import {
-  generateData
-} from './test-data.js';
-import {
-  getRandomIntegerNumber
-} from './utils.js';
-
-const bookingMap = document.querySelector('#map-canvas');
 const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
-const offersList = document.createDocumentFragment();
-const APARTMENTS_DESCRIPTION = {
+
+const apartmentsDescription = {
   'palace': 'Дворец',
   'flat': 'Квартира',
   'house': 'Дом',
   'bungalow': 'Бунгало',
   'hotel': 'Отель',
 };
-
-const ads = generateData();
 
 const setCardAvatar = (card, {avatar}) => {
   const avatarElement = card.querySelector('.popup__avatar');
@@ -62,7 +52,7 @@ const setCardType = (card, {type}) => {
   const typeElement = card.querySelector('.popup__type');
 
   if (type) {
-    typeElement.textContent = APARTMENTS_DESCRIPTION[type];
+    typeElement.textContent = apartmentsDescription[type];
   } else {
     typeElement.style.visibility = 'hidden';
   }
@@ -71,12 +61,16 @@ const setCardType = (card, {type}) => {
 const setCardCapacity = (card, {rooms, guests}) => {
   const capacityElement = card.querySelector('.popup__text--capacity');
 
-  if (rooms && guests) {
-    capacityElement.textContent = `${rooms} комнаты для ${guests} гостей`;
+  const guestsDataExists = guests || !(+guests);
+
+  const guestsData = guestsDataExists && guests ? `для ${guests} гостей` : 'не для гостей';
+
+  if (rooms && guestsDataExists) {
+    capacityElement.textContent = `${rooms} комнаты ${guestsData}`;
   } else if (rooms) {
     capacityElement.textContent = `${rooms} комнаты`;
-  } else if (guests) {
-    capacityElement.textContent = `Для ${guests} гостей`;
+  } else if (guestsDataExists) {
+    capacityElement.textContent = guestsData.substring(0, 1).toUpperCase() + guestsData.substring(1);
   } else {
     capacityElement.style.visibility = 'hidden';
   }
@@ -138,7 +132,7 @@ const setCardPhotos = (card, {photos}) => {
   }
 };
 
-ads.forEach(({author, offer}) => {
+const getPopup = ({author, offer}) => {
   const card = cardTemplate.cloneNode(true);
 
   setCardAvatar(card, author);
@@ -152,7 +146,9 @@ ads.forEach(({author, offer}) => {
   setCardDescription(card, offer);
   setCardPhotos(card, offer);
 
-  offersList.append(card);
-});
+  return card;
+};
 
-bookingMap.append(offersList.children[getRandomIntegerNumber(0, offersList.children.length - 1)]);
+export {
+  getPopup
+};

@@ -10,15 +10,15 @@ const MIN_LAT = 35.65000;
 const MAX_LAT = 35.70000;
 const MIN_LNG = 139.70000;
 const MAX_LNG = 139.80000;
-const DECIMAL_PLACES_QTY = 4;
+const DECIMAL_MANTISSA_LENGTH = 4;
 const MIN_PRICE = 10000;
 const MAX_PRICE = 100000;
-const MIN_ROOMS_QTY = 1;
-const MAX_ROOMS_QTY = 10;
-const MIN_GUESTS_QTY = 1;
-const MAX_GUESTS_QTY = 6;
+const MIN_ROOMS_QTY = 0;
+const MAX_ROOMS_QTY = 3;
+const MIN_GUESTS_QTY = 0;
+const MAX_GUESTS_QTY = 3;
 
-const APARTMENTS_TYPE = [
+const APARTMENTS_TYPES = [
   'palace',
   'flat',
   'house',
@@ -60,8 +60,9 @@ const generateAuthor = (avatarNumber) => ({
 
 const generateOffer = (id, location) => {
   const price = getRandomIntegerNumber(MIN_PRICE, MAX_PRICE);
-  const type = getRandomArrayItem(APARTMENTS_TYPE);
-  const rooms = getRandomIntegerNumber(MIN_ROOMS_QTY, MAX_ROOMS_QTY);
+  const type = getRandomArrayItem(APARTMENTS_TYPES);
+  let rooms = getRandomIntegerNumber(MIN_ROOMS_QTY, MAX_ROOMS_QTY);
+  rooms = rooms ? rooms : 100;
   const features = getRandomArrayItemsCollection(FEATURES);
   const description = `Best ${type} you've ever seen. It has ${rooms} rooms. Offer includes ${features.join(', ')}. And only today at low price ${price}₽ per night`;
 
@@ -80,13 +81,13 @@ const generateOffer = (id, location) => {
   };
 };
 
-const generatetLocation = () => ({
-  lat: getRandomRealNumber(MIN_LAT, MAX_LAT, DECIMAL_PLACES_QTY),
-  lng: getRandomRealNumber(MIN_LNG, MAX_LNG, DECIMAL_PLACES_QTY),
+const generateLocation = () => ({
+  lat: getRandomRealNumber(MIN_LAT, MAX_LAT, DECIMAL_MANTISSA_LENGTH),
+  lng: getRandomRealNumber(MIN_LNG, MAX_LNG, DECIMAL_MANTISSA_LENGTH),
 });
 
 const generateAd = (stub, index) => {
-  const location = generatetLocation();
+  const location = generateLocation();
   const ad = {
     author: generateAuthor(index + 1),
     offer: generateOffer(index + 1, location),
