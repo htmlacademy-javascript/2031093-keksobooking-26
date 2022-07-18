@@ -1,3 +1,11 @@
+import {
+  sendData
+} from './api.js';
+
+import {
+  showAdFormAlert
+} from './utils.js';
+
 const formAdElement = document.querySelector('.ad-form');
 const formFiltersElement = document.querySelector('.map__filters');
 const roomNumberElement = document.querySelector('#room_number');
@@ -8,6 +16,7 @@ const priceElement = document.querySelector('#price');
 const timeinElement = document.querySelector('#timein');
 const timeoutElement = document.querySelector('#timeout');
 const sliderElement = document.querySelector('.ad-form__slider');
+const formSubmitButtonElement = document.querySelector('.ad-form__submit').closest('fieldset');
 
 const capacityOption = {
   '1': ['1'],
@@ -100,6 +109,43 @@ const getCapacityErrorMessage = () => {
 
 const getPriceErrorMessage = () => `Минимальная цена ${priceOption[typeElement.value]}`;
 
+const resetPage = () => {
+  formAdElement.reset();
+  formFiltersElement.reset();
+};
+
+const setAlertEventListeners = (alertElement) => {
+  document.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape') {
+      alertElement.remove();
+    }
+  });
+
+  document.addEventListener('click', () => {
+    alertElement.remove();
+  });
+};
+
+const handleSendFormError = () => {
+  const alertElement = showAdFormAlert('error');
+  const alertCloseButtonElement = alertElement.querySelector('.error__button');
+
+  setAlertEventListeners(alertElement);
+  formSubmitButtonElement.disabled = false;
+
+  alertCloseButtonElement.addEventListener('click', () => {
+    alertElement.remove();
+  });
+};
+
+const handleSendFormSuccess = () => {
+  const alertElement = showAdFormAlert('success');
+
+  resetPage();
+  setAlertEventListeners(alertElement);
+  formSubmitButtonElement.disabled = false;
+};
+
 const onRoomsChange = () => {
   pristine.validate(capacityElement);
 };
@@ -168,8 +214,19 @@ formAdElement.addEventListener('submit', (evt) => {
 
   const isValid = pristine.validate();
   if (isValid) {
-    formAdElement.submit();
+    formSubmitButtonElement.disabled = true;
+    const formData = new FormData(evt.target);
+    sendData(handleSendFormSuccess, handleSendFormError, formData);
   }
+});
+
+formAdElement.addEventListener('reset', () => {
+  const basePrice = priceOption['flat'];
+
+  priceElement.min = basePrice;
+  priceElement.placeholder = basePrice;
+  priceElement.dataset.pristineMinMessage  = `Минимальная цена ${basePrice}`;
+  sliderElement.noUiSlider.set(+basePrice);
 });
 
 export {
