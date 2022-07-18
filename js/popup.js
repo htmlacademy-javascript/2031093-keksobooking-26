@@ -94,7 +94,7 @@ const setCardFeatures = (card, {features}) => {
   const featureList = card.querySelector('.popup__features').children;
   let isNotNecessary;
 
-  if (features.length) {
+  if (features && features.length) {
     isNotNecessary = (featureElement) => !features.some(
       (feature) => featureElement.classList.contains(`popup__feature--${feature}`));
   } else {
@@ -117,7 +117,7 @@ const setCardDescription = (card, {description}) => {
 const setCardPhotos = (card, {photos}) => {
   const photosContainer = card.querySelector('.popup__photos');
 
-  if (photos.length) {
+  if (photos && photos.length) {
     const photoTemplate = photosContainer.querySelector('.popup__photo');
 
     photosContainer.innerHTML = '';

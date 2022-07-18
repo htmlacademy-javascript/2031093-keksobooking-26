@@ -5,20 +5,25 @@ import {
 } from './form.js';
 
 import {
-  generateData
-} from './test-data.js';
+  getData
+} from './api.js';
 
 import {
   getPopup
 } from './popup.js';
 
+import {
+  getRandomIntegerNumber
+  , showMapPinsAlert
+} from './utils.js';
+
 const DECIMAL_MANTISSA_LENGTH = 5;
 const INITIAL_MAP_SCALE = 16;
+const MAX_ADS_QUANTITY = 10;
 const centerOfTokyoCoordinates = {
   lat: 35.69771374623864,
   lng: 139.7730618400656,
 };
-const testAds = generateData();
 
 const map = L.map('map-canvas')
   .on('load', () => {
@@ -63,9 +68,18 @@ const createMarker = (ad) => {
     .bindPopup(getPopup(ad));
 };
 
-testAds.forEach((ad) => {
-  createMarker(ad);
-});
+getData(
+  (similarAds) => {
+    const firstAdNumber = getRandomIntegerNumber(0, similarAds.length - MAX_ADS_QUANTITY);
+
+    similarAds
+      .slice(firstAdNumber, firstAdNumber + MAX_ADS_QUANTITY)
+      .forEach((ad) => {
+        createMarker(ad);
+      });
+  },
+  showMapPinsAlert
+);
 
 mainPinMarker.on('move', (evt) => {
   const latLng = evt.target.getLatLng();
@@ -78,6 +92,7 @@ mainPinMarker.on('move', (evt) => {
 const resetMap = () => {
   mainPinMarker.setLatLng(centerOfTokyoCoordinates);
   map.setView(centerOfTokyoCoordinates, INITIAL_MAP_SCALE);
+  map.closePopup();
 };
 
 formAdElement.addEventListener('reset', () => {
