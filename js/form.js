@@ -78,8 +78,11 @@ const setPageToInactive = () => {
   setFormToInactive(formFiltersElement);
 };
 
-const setPageToActive = () => {
+const setAdFormToActive = () => {
   setFormToActive(formAdElement);
+};
+
+const setFilterFormToActive = () => {
   setFormToActive(formFiltersElement);
 };
 
@@ -218,6 +221,8 @@ formAdElement.addEventListener('submit', (evt) => {
     const formData = new FormData(evt.target);
     sendData(handleSendFormSuccess, handleSendFormError, formData);
   }
+
+  formFiltersElement.reset();
 });
 
 formAdElement.addEventListener('reset', () => {
@@ -227,11 +232,14 @@ formAdElement.addEventListener('reset', () => {
   priceElement.placeholder = basePrice;
   priceElement.dataset.pristineMinMessage  = `Минимальная цена ${basePrice}`;
   sliderElement.noUiSlider.set(+basePrice);
+
+  formFiltersElement.reset();
 });
 
 export {
   setPageToInactive
-  , setPageToActive
+  , setAdFormToActive
+  , setFilterFormToActive
   , setAddress
   , formAdElement
 };

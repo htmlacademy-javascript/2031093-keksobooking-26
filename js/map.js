@@ -1,5 +1,6 @@
 import {
-  setPageToActive
+  setAdFormToActive
+  , setFilterFormToActive
   , setAddress
   , formAdElement
 } from './form.js';
@@ -25,22 +26,14 @@ const centerOfTokyoCoordinates = {
   lng: 139.7730618400656,
 };
 
-const map = L.map('map-canvas')
-  .on('load', () => {
-    const lat = centerOfTokyoCoordinates.lat.toFixed(DECIMAL_MANTISSA_LENGTH);
-    const lng = centerOfTokyoCoordinates.lng.toFixed(DECIMAL_MANTISSA_LENGTH);
+const map = L.map('map-canvas');
 
-    setPageToActive();
-    setAddress(`${lat}, ${lng}`);
-  })
-  .setView(centerOfTokyoCoordinates, INITIAL_MAP_SCALE);
-
-L.tileLayer(
+const tileLayer = L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   },
-).addTo(map);
+);
 
 const getPinIcon = (width, height, imgSrc) => ({
   iconUrl: imgSrc,
@@ -55,9 +48,9 @@ const otherPinIcon = L.icon( getPinIcon(40, 40, './img/pin.svg') );
 const mainPinMarker = L.marker(centerOfTokyoCoordinates, {
   draggable: true,
   icon: mainPinIcon,
-}).addTo(map);
+});
 
-const markerGroup = L.layerGroup().addTo(map);
+const markerGroup = L.layerGroup();
 
 const createMarker = (ad) => {
   L.marker(ad.location, {
@@ -68,18 +61,31 @@ const createMarker = (ad) => {
     .bindPopup(getPopup(ad));
 };
 
-getData(
-  (similarAds) => {
-    const firstAdNumber = getRandomIntegerNumber(0, similarAds.length - MAX_ADS_QUANTITY);
+const setSimilarAdsToMap = (similarAds) => {
+  const firstAdNumber = getRandomIntegerNumber(0, similarAds.length - MAX_ADS_QUANTITY);
 
-    similarAds
-      .slice(firstAdNumber, firstAdNumber + MAX_ADS_QUANTITY)
-      .forEach((ad) => {
-        createMarker(ad);
-      });
-  },
-  showMapPinsAlert
-);
+  similarAds
+    // .slice(firstAdNumber, firstAdNumber + MAX_ADS_QUANTITY)
+    .forEach((ad) => {
+      createMarker(ad);
+    });
+
+  setFilterFormToActive();
+};
+
+const resetMap = () => {
+  mainPinMarker.setLatLng(centerOfTokyoCoordinates);
+  map.setView(centerOfTokyoCoordinates, INITIAL_MAP_SCALE);
+  map.closePopup();
+};
+
+map.on('load', () => {
+  const lat = centerOfTokyoCoordinates.lat.toFixed(DECIMAL_MANTISSA_LENGTH);
+  const lng = centerOfTokyoCoordinates.lng.toFixed(DECIMAL_MANTISSA_LENGTH);
+
+  setAdFormToActive();
+  setAddress(`${lat}, ${lng}`);
+}).setView(centerOfTokyoCoordinates, INITIAL_MAP_SCALE);
 
 mainPinMarker.on('move', (evt) => {
   const latLng = evt.target.getLatLng();
@@ -89,14 +95,13 @@ mainPinMarker.on('move', (evt) => {
   setAddress(`${lat}, ${lng}`);
 });
 
-const resetMap = () => {
-  mainPinMarker.setLatLng(centerOfTokyoCoordinates);
-  map.setView(centerOfTokyoCoordinates, INITIAL_MAP_SCALE);
-  map.closePopup();
-};
-
 formAdElement.addEventListener('reset', () => {
   setTimeout(() => {
     resetMap();
   }, 100);
 });
+
+tileLayer.addTo(map);
+mainPinMarker.addTo(map);
+markerGroup.addTo(map);
+getData(setSimilarAdsToMap, showMapPinsAlert);
