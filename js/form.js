@@ -237,9 +237,9 @@ formAdElement.addEventListener('reset', () => {
 });
 
 export {
-  setPageToInactive
-  , setAdFormToActive
-  , setFilterFormToActive
-  , setAddress
-  , formAdElement
+  setPageToInactive,
+  setAdFormToActive,
+  setFilterFormToActive,
+  setAddress,
+  formAdElement
 };

@@ -82,10 +82,10 @@ const showAdFormAlert = (type) => {
 };
 
 export {
-  getRandomArrayItem
-  , getRandomArrayItemsCollection
-  , getRandomIntegerNumber
-  , getRandomRealNumber
-  , showMapPinsAlert
-  , showAdFormAlert
+  getRandomArrayItem,
+  getRandomArrayItemsCollection,
+  getRandomIntegerNumber,
+  getRandomRealNumber,
+  showMapPinsAlert,
+  showAdFormAlert
 };
