@@ -1,7 +1,8 @@
 import {
-  setPageToActive
-  , setAddress
-  , formAdElement
+  setAdFormToActive,
+  setFilterFormToActive,
+  setAddress,
+  formAdElement
 } from './form.js';
 
 import {
@@ -13,34 +14,40 @@ import {
 } from './popup.js';
 
 import {
-  getRandomIntegerNumber
-  , showMapPinsAlert
+  getRandomIntegerNumber,
+  showMapPinsAlert
 } from './utils.js';
 
 const DECIMAL_MANTISSA_LENGTH = 5;
 const INITIAL_MAP_SCALE = 16;
 const MAX_ADS_QUANTITY = 10;
+const ANY = 'any';
 const centerOfTokyoCoordinates = {
   lat: 35.69771374623864,
   lng: 139.7730618400656,
 };
+const priceFilterOption = {
+  'any': [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY],
+  'middle': [10000, 50000],
+  'low': [Number.NEGATIVE_INFINITY, 10000],
+  'high': [50000, Number.POSITIVE_INFINITY],
+};
 
-const map = L.map('map-canvas')
-  .on('load', () => {
-    const lat = centerOfTokyoCoordinates.lat.toFixed(DECIMAL_MANTISSA_LENGTH);
-    const lng = centerOfTokyoCoordinates.lng.toFixed(DECIMAL_MANTISSA_LENGTH);
+const formFiltersElement = document.querySelector('.map__filters');
+const housingTypeElement = document.querySelector('#housing-type');
+const housingPriceElement = document.querySelector('#housing-price');
+const housingRoomsElement = document.querySelector('#housing-rooms');
+const housingGuestsElement = document.querySelector('#housing-guests');
+const housingFeaturesElement = document.querySelector('#housing-features');
 
-    setPageToActive();
-    setAddress(`${lat}, ${lng}`);
-  })
-  .setView(centerOfTokyoCoordinates, INITIAL_MAP_SCALE);
+const map = L.map('map-canvas');
 
-L.tileLayer(
+const tileLayer = L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   },
-).addTo(map);
+);
 
 const getPinIcon = (width, height, imgSrc) => ({
   iconUrl: imgSrc,
@@ -55,9 +62,9 @@ const otherPinIcon = L.icon( getPinIcon(40, 40, './img/pin.svg') );
 const mainPinMarker = L.marker(centerOfTokyoCoordinates, {
   draggable: true,
   icon: mainPinIcon,
-}).addTo(map);
+});
 
-const markerGroup = L.layerGroup().addTo(map);
+const markerGroup = L.layerGroup();
 
 const createMarker = (ad) => {
   L.marker(ad.location, {
@@ -68,18 +75,77 @@ const createMarker = (ad) => {
     .bindPopup(getPopup(ad));
 };
 
-getData(
-  (similarAds) => {
-    const firstAdNumber = getRandomIntegerNumber(0, similarAds.length - MAX_ADS_QUANTITY);
+const renderAds = async (ads) => {
+  map.closePopup();
+  markerGroup.clearLayers();
 
-    similarAds
-      .slice(firstAdNumber, firstAdNumber + MAX_ADS_QUANTITY)
-      .forEach((ad) => {
-        createMarker(ad);
-      });
-  },
-  showMapPinsAlert
-);
+  const firstAdNumber = (ads.length <= MAX_ADS_QUANTITY) ? 0 : getRandomIntegerNumber(0, ads.length - MAX_ADS_QUANTITY);
+
+  ads
+    .slice(firstAdNumber, firstAdNumber + MAX_ADS_QUANTITY)
+    .forEach((ad) => {
+      createMarker(ad);
+    });
+};
+
+const isTypeMatchesToFilter = ({offer: {type}}, {value: filter}) => type && (filter === ANY || type === filter);
+
+const isPriceMatchesToFilter = ({offer: {price}}, {value: filter}) => price &&
+  (filter === ANY || price >= priceFilterOption[filter][0] && price < priceFilterOption[filter][1]);
+
+const isRoomsMatchToFilter = ({offer: {rooms}}, {value: filter}) => rooms && (filter === ANY || rooms === +filter);
+
+const isGuestsMatchToFilter = ({offer: {guests}}, {value: filter}) => (guests || !(+guests)) &&
+  (filter === ANY || guests === +filter);
+
+const isFeaturesMatchToFilters = ({offer: {features}}, filters) => !(filters.length) || features &&
+  filters.map((f) => features.includes(f)).reduce((f1, f2) => f1 && f2, true);
+
+const setTypeFilterEvents = (similarAds) => {
+  const filterFeaturesValue = [...housingFeaturesElement.querySelectorAll('[name="features"]')]
+    .filter((item) => item.checked).map((item) => item.value);
+
+  const typeMatches = (ad) => isTypeMatchesToFilter(ad, housingTypeElement);
+  const priceMatches = (ad) => isPriceMatchesToFilter(ad, housingPriceElement);
+  const roomsMatch = (ad) => isRoomsMatchToFilter(ad, housingRoomsElement);
+  const guestsMatch = (ad) => isGuestsMatchToFilter(ad, housingGuestsElement);
+  const featuresMatch = (ad) => isFeaturesMatchToFilters(ad, filterFeaturesValue);
+
+  const sortedAds = similarAds
+    .filter(typeMatches)
+    .filter(priceMatches)
+    .filter(roomsMatch)
+    .filter(guestsMatch)
+    .filter(featuresMatch);
+
+  renderAds(sortedAds);
+};
+
+const setMapFilterEvents = async (similarAds) => {
+  formFiltersElement.addEventListener('change', () => setTypeFilterEvents(similarAds));
+};
+
+const setSimilarAdsToMap = async (similarAds) => {
+
+  await renderAds(similarAds);
+  await setMapFilterEvents(similarAds);
+
+  setFilterFormToActive();
+};
+
+const resetMap = () => {
+  mainPinMarker.setLatLng(centerOfTokyoCoordinates);
+  map.setView(centerOfTokyoCoordinates, INITIAL_MAP_SCALE);
+  map.closePopup();
+};
+
+map.on('load', () => {
+  const lat = centerOfTokyoCoordinates.lat.toFixed(DECIMAL_MANTISSA_LENGTH);
+  const lng = centerOfTokyoCoordinates.lng.toFixed(DECIMAL_MANTISSA_LENGTH);
+
+  setAdFormToActive();
+  setAddress(`${lat}, ${lng}`);
+}).setView(centerOfTokyoCoordinates, INITIAL_MAP_SCALE);
 
 mainPinMarker.on('move', (evt) => {
   const latLng = evt.target.getLatLng();
@@ -89,14 +155,25 @@ mainPinMarker.on('move', (evt) => {
   setAddress(`${lat}, ${lng}`);
 });
 
-const resetMap = () => {
-  mainPinMarker.setLatLng(centerOfTokyoCoordinates);
-  map.setView(centerOfTokyoCoordinates, INITIAL_MAP_SCALE);
-  map.closePopup();
-};
-
 formAdElement.addEventListener('reset', () => {
   setTimeout(() => {
     resetMap();
   }, 100);
 });
+
+const renderMap = (callback) => {
+  try {
+
+    tileLayer.addTo(map);
+    mainPinMarker.addTo(map);
+    markerGroup.addTo(map);
+
+    callback();
+
+  } catch (error) {
+    throw new Error(`${error.name}: ${error.message},
+${error.stack}`);
+  }
+};
+
+renderMap(() => {getData(setSimilarAdsToMap, showMapPinsAlert);});
