@@ -32,15 +32,6 @@ const priceFilterOption = {
   'low': [Number.NEGATIVE_INFINITY, 10000],
   'high': [50000, Number.POSITIVE_INFINITY],
 };
-// const featureOption = {
-//   wifi,
-//   'dishwasher': ,
-//   parking,  //'parking', 'wifi', 'washer', 'dishwasher', 'conditioner', 'elevator'
-//   'washer': ,
-//   'elevator': ,
-//   'conditioner': ,
-// };
-
 
 const formFiltersElement = document.querySelector('.map__filters');
 const housingTypeElement = document.querySelector('#housing-type');
@@ -102,44 +93,30 @@ const isTypeMatchesToFilter = ({offer: {type}}, {value: filter}) => type && (fil
 const isPriceMatchesToFilter = ({offer: {price}}, {value: filter}) => price &&
   (filter === ANY || price >= priceFilterOption[filter][0] && price < priceFilterOption[filter][1]);
 
-const isRoomsMatchesToFilter = ({offer: {rooms}}, {value: filter}) => rooms && (filter === ANY || rooms === +filter);
+const isRoomsMatchToFilter = ({offer: {rooms}}, {value: filter}) => rooms && (filter === ANY || rooms === +filter);
 
-const isGuestsMatchesToFilter = ({offer: {guests}}, {value: filter}) => (guests || !(+guests)) &&
+const isGuestsMatchToFilter = ({offer: {guests}}, {value: filter}) => (guests || !(+guests)) &&
   (filter === ANY || guests === +filter);
 
-
-
+const isFeaturesMatchToFilters = ({offer: {features}}, filters) => !(filters.length) || features &&
+  filters.map((f) => features.includes(f)).reduce((f1, f2) => f1 && f2, true);
 
 const setTypeFilterEvents = (similarAds) => {
   const filterFeaturesValue = [...housingFeaturesElement.querySelectorAll('[name="features"]')]
     .filter((item) => item.checked).map((item) => item.value);
 
-  // console.log(similarAds.filter((ad) => ad.offer.features && ad.offer.features.length === 6));
-  // console.log(similarAds.filter((ad) => !(ad.offer.features)));
-  console.log(filterFeaturesValue.length + ' - ' + filterFeaturesValue);
-
   const typeMatches = (ad) => isTypeMatchesToFilter(ad, housingTypeElement);
   const priceMatches = (ad) => isPriceMatchesToFilter(ad, housingPriceElement);
-  const roomsMatches = (ad) => isRoomsMatchesToFilter(ad, housingRoomsElement);
-  const guestsMatches = (ad) => isGuestsMatchesToFilter(ad, housingGuestsElement);
+  const roomsMatch = (ad) => isRoomsMatchToFilter(ad, housingRoomsElement);
+  const guestsMatch = (ad) => isGuestsMatchToFilter(ad, housingGuestsElement);
+  const featuresMatch = (ad) => isFeaturesMatchToFilters(ad, filterFeaturesValue);
 
-  const featuresMatches = (ad) => !(filterFeaturesValue.length) || ad.offer.features &&
-    ad.offer.features.map((f) => filterFeaturesValue.includes(f)).reduce((f1, f2) => f1 && f2, true);
-
-  let sortedAds = similarAds
+  const sortedAds = similarAds
     .filter(typeMatches)
     .filter(priceMatches)
-    .filter(roomsMatches)
-    .filter(guestsMatches)
-    // .filter(featuresMatches)
-    ;
-  console.log(sortedAds);
-
-  sortedAds = sortedAds.filter((ad) => {
-    console.log(featuresMatches(ad));
-    return featuresMatches(ad)
-  });
-  console.log(sortedAds);
+    .filter(roomsMatch)
+    .filter(guestsMatch)
+    .filter(featuresMatch);
 
   renderAds(sortedAds);
 };
