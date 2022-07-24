@@ -6,6 +6,22 @@ import {
   showAdFormAlert
 } from './utils.js';
 
+const capacityOption = {
+  '1': ['1'],
+  '2': ['1', '2'],
+  '3': ['1', '2', '3'],
+  '100': ['0'],
+};
+const priceOption = {
+  'bungalow': '0',
+  'flat': '1000',
+  'hotel': '3000',
+  'house': '5000',
+  'palace': '10000',
+};
+const MAX_PRICE = 100000;
+const IMAGE_TYPE = 'image';
+
 const formFiltersElement = document.querySelector('.map__filters');
 const formAdElement = document.querySelector('.ad-form');
 const avatarSelectionElement = document.querySelector('#avatar');
@@ -21,25 +37,6 @@ const sliderElement = document.querySelector('.ad-form__slider');
 const photoSelectionElement = document.querySelector('#images');
 const photoPreviewElement = document.querySelector('.ad-form__photo');
 const formSubmitButtonElement = document.querySelector('.ad-form__submit').closest('fieldset');
-
-const IMAGE_TYPE = 'image';
-
-const capacityOption = {
-  '1': ['1'],
-  '2': ['1', '2'],
-  '3': ['1', '2', '3'],
-  '100': ['0'],
-};
-
-const priceOption = {
-  'bungalow': '0',
-  'flat': '1000',
-  'hotel': '3000',
-  'house': '5000',
-  'palace': '10000',
-};
-
-const MAX_PRICE = 100000;
 
 const pristine = new Pristine(formAdElement, {
   classTo: 'ad-form__element',
@@ -134,15 +131,23 @@ const resetPage = () => {
 };
 
 const setAlertEventListeners = (alertElement) => {
-  document.addEventListener('keydown', (evt) => {
+
+  function onPopupEscKeydown(evt) {
     if (evt.key === 'Escape') {
       alertElement.remove();
+      document.removeEventListener('click', onPopupClick);
+      document.removeEventListener('keydown', onPopupEscKeydown);
     }
-  });
+  }
 
-  document.addEventListener('click', () => {
+  function onPopupClick() {
     alertElement.remove();
-  });
+    document.removeEventListener('click', onPopupClick);
+    document.removeEventListener('keydown', onPopupEscKeydown);
+  }
+
+  document.addEventListener('keydown', onPopupEscKeydown);
+  document.addEventListener('click', onPopupClick);
 };
 
 const handleSendFormError = () => {

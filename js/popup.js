@@ -1,5 +1,3 @@
-const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
-
 const apartmentsDescription = {
   'palace': 'Дворец',
   'flat': 'Квартира',
@@ -7,6 +5,8 @@ const apartmentsDescription = {
   'bungalow': 'Бунгало',
   'hotel': 'Отель',
 };
+
+const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
 
 const setCardAvatar = (card, {avatar}) => {
   const avatarElement = card.querySelector('.popup__avatar');
