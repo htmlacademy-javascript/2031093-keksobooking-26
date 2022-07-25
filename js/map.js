@@ -14,6 +14,7 @@ import {
 } from './popup.js';
 
 import {
+  debounce,
   getRandomIntegerNumber,
   showMapPinsAlert
 } from './utils.js';
@@ -22,6 +23,7 @@ const DECIMAL_MANTISSA_LENGTH = 5;
 const INITIAL_MAP_SCALE = 16;
 const MAX_ADS_QUANTITY = 10;
 const ANY = 'any';
+const DEBOUNCE_TIMER_DELAY_SETPOINT = 500;
 const centerOfTokyoCoordinates = {
   lat: 35.69771374623864,
   lng: 139.7730618400656,
@@ -101,7 +103,7 @@ const isGuestsMatchToFilter = ({offer: {guests}}, {value: filter}) => (guests ||
 const isFeaturesMatchToFilters = ({offer: {features}}, filters) => !(filters.length) || features &&
   filters.map((f) => features.includes(f)).reduce((f1, f2) => f1 && f2, true);
 
-const setTypeFilterEvents = (similarAds) => {
+const applyFilters = (similarAds) => {
   const filterFeaturesValue = [...housingFeaturesElement.querySelectorAll('[name="features"]')]
     .filter((item) => item.checked).map((item) => item.value);
 
@@ -122,7 +124,8 @@ const setTypeFilterEvents = (similarAds) => {
 };
 
 const setMapFilterEvents = async (similarAds) => {
-  formFiltersElement.addEventListener('change', () => setTypeFilterEvents(similarAds));
+  formFiltersElement.addEventListener('change', debounce(
+    () => applyFilters(similarAds), DEBOUNCE_TIMER_DELAY_SETPOINT));
 };
 
 const setSimilarAdsToMap = async (similarAds) => {
@@ -176,4 +179,4 @@ ${error.stack}`);
   }
 };
 
-renderMap(() => {getData(setSimilarAdsToMap, showMapPinsAlert);});
+renderMap(() => { getData(setSimilarAdsToMap, showMapPinsAlert); });

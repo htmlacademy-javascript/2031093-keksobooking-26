@@ -81,11 +81,21 @@ const showAdFormAlert = (type) => {
   return alertElement;
 };
 
+const debounce = (callback, timeoutDelay) => {
+  let timeoutId;
+
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
 export {
   getRandomArrayItem,
   getRandomArrayItemsCollection,
   getRandomIntegerNumber,
   getRandomRealNumber,
   showMapPinsAlert,
-  showAdFormAlert
+  showAdFormAlert,
+  debounce
 };
