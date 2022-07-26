@@ -7,11 +7,11 @@ const GET_DATA_URL = 'https://26.javascript.pages.academy/keksobooking/data';
 const POST_DATA_URL = 'https://26.javascript.pages.academy/keksobooking';
 
 const getJson = (response, errorMessage = DEFAULT_JSON_EXTRACTING_ERROR_MESSAGE) => {
-  if (response.ok) {
-    return response.json();
-  } else {
+  if (!response.ok) {
     throw new Error(errorMessage);
   }
+
+  return response.json();
 };
 
 const getData = async (onSuccess, onFail) => {

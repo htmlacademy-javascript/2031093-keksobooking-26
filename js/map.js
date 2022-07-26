@@ -1,13 +1,8 @@
 import {
-  setAdFormToActive,
-  setFilterFormToActive,
+  setPageToActive,
   setAddress,
   formAdElement
 } from './form.js';
-
-import {
-  getData
-} from './api.js';
 
 import {
   getPopup
@@ -15,8 +10,7 @@ import {
 
 import {
   debounce,
-  getRandomIntegerNumber,
-  showMapPinsAlert
+  getRandomIntegerNumber
 } from './utils.js';
 
 const DECIMAL_MANTISSA_LENGTH = 5;
@@ -24,7 +18,7 @@ const INITIAL_MAP_SCALE = 16;
 const MAX_ADS_QUANTITY = 10;
 const ANY = 'any';
 const DEBOUNCE_TIMER_DELAY_SETPOINT = 500;
-const centerOfTokyoCoordinates = {
+const initialCoordinates = {
   lat: 35.69771374623864,
   lng: 139.7730618400656,
 };
@@ -61,7 +55,7 @@ const mainPinIcon = L.icon( getPinIcon(52, 52, './img/main-pin.svg') );
 
 const otherPinIcon = L.icon( getPinIcon(40, 40, './img/pin.svg') );
 
-const mainPinMarker = L.marker(centerOfTokyoCoordinates, {
+const mainPinMarker = L.marker(initialCoordinates, {
   draggable: true,
   icon: mainPinIcon,
 });
@@ -133,22 +127,21 @@ const setSimilarAdsToMap = async (similarAds) => {
   await renderAds(similarAds);
   await setMapFilterEvents(similarAds);
 
-  setFilterFormToActive();
+  setPageToActive();
 };
 
 const resetMap = () => {
-  mainPinMarker.setLatLng(centerOfTokyoCoordinates);
-  map.setView(centerOfTokyoCoordinates, INITIAL_MAP_SCALE);
+  mainPinMarker.setLatLng(initialCoordinates);
+  map.setView(initialCoordinates, INITIAL_MAP_SCALE);
   map.closePopup();
 };
 
 map.on('load', () => {
-  const lat = centerOfTokyoCoordinates.lat.toFixed(DECIMAL_MANTISSA_LENGTH);
-  const lng = centerOfTokyoCoordinates.lng.toFixed(DECIMAL_MANTISSA_LENGTH);
+  const lat = initialCoordinates.lat.toFixed(DECIMAL_MANTISSA_LENGTH);
+  const lng = initialCoordinates.lng.toFixed(DECIMAL_MANTISSA_LENGTH);
 
-  setAdFormToActive();
   setAddress(`${lat}, ${lng}`);
-}).setView(centerOfTokyoCoordinates, INITIAL_MAP_SCALE);
+}).setView(initialCoordinates, INITIAL_MAP_SCALE);
 
 mainPinMarker.on('move', (evt) => {
   const latLng = evt.target.getLatLng();
@@ -179,4 +172,7 @@ ${error.stack}`);
   }
 };
 
-renderMap(() => { getData(setSimilarAdsToMap, showMapPinsAlert); });
+export {
+  setSimilarAdsToMap,
+  renderMap
+};

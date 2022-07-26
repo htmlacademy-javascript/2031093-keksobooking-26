@@ -28,29 +28,6 @@ const getRandomIntegerNumber = (min, max) => {
   return getRandomNumber(min, max, 0, functionError);
 };
 
-const getRandomRealNumber = (min, max, tail) => {
-  const functionError = 'getRandomRealNumber function error!';
-
-  return getRandomNumber(min, max, tail, functionError);
-};
-
-const getRandomArrayItem = (array) => array[getRandomIntegerNumber(0, array.length - 1)];
-
-const getRandomArrayItemsCollection = (array) => {
-  const itemsQty = getRandomIntegerNumber(1, array.length);
-  const items = [];
-
-  while (items.length < itemsQty) {
-    const item = getRandomArrayItem(array);
-    if (!items.includes(item)) {
-      items.push(item);
-    }
-
-  }
-
-  return items;
-};
-
 const showMapPinsAlert = (message) => {
   const alertContainer = document.createElement('div');
   alertContainer.style.zIndex = '100';
@@ -91,10 +68,7 @@ const debounce = (callback, timeoutDelay) => {
 };
 
 export {
-  getRandomArrayItem,
-  getRandomArrayItemsCollection,
   getRandomIntegerNumber,
-  getRandomRealNumber,
   showMapPinsAlert,
   showAdFormAlert,
   debounce
