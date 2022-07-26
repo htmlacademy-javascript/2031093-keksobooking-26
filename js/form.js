@@ -6,6 +6,8 @@ import {
   showAdFormAlert
 } from './utils.js';
 
+const MAX_PRICE = 100000;
+const IMAGE_TYPE = 'image';
 const capacityOption = {
   '1': ['1'],
   '2': ['1', '2'],
@@ -19,8 +21,6 @@ const priceOption = {
   'house': '5000',
   'palace': '10000',
 };
-const MAX_PRICE = 100000;
-const IMAGE_TYPE = 'image';
 
 const formFiltersElement = document.querySelector('.map__filters');
 const formAdElement = document.querySelector('.ad-form');
@@ -81,12 +81,9 @@ const setPageToInactive = () => {
   setFormToInactive(formFiltersElement);
 };
 
-const setAdFormToActive = () => {
-  setFormToActive(formAdElement);
-};
-
-const setFilterFormToActive = () => {
+const setPageToActive = () => {
   setFormToActive(formFiltersElement);
+  setFormToActive(formAdElement);
 };
 
 const setAddress = (address) => {
@@ -295,8 +292,7 @@ formAdElement.addEventListener('reset', () => {
 
 export {
   setPageToInactive,
-  setAdFormToActive,
-  setFilterFormToActive,
+  setPageToActive,
   setAddress,
   formAdElement
 };
